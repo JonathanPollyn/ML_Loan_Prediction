@@ -39,7 +39,7 @@ accuracy_score(y_cv,pred_cv)
 pred_train = model.predict(x_train)
 accuracy_score(y_train,pred_train)
 
-pickle_out = open("classifier.pkl", mode = "wb") 
+pickle_out = open(r"C:\Python_GUI\Loan_Prediction_Machine\classifier.pkl", mode = "wb") 
 pickle.dump(model, pickle_out) 
 pickle_out.close()
 
