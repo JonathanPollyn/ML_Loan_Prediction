@@ -5,6 +5,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns 
 
+st.title('Loan prediction system')
+st.subheader('A Machine Learning App by Jonathan Pollyn')
+st.write(('This app aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process. The application focuses on reducing the manual time and effort involved in the loan approval process'))
 
 from sklearn.model_selection import train_test_split
 from sklearn import svm
