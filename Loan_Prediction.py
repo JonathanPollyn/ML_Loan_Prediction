@@ -5,9 +5,27 @@ import numpy as np
 import pandas as pd
 import seaborn as sns 
 
-st.title('Loan prediction system')
-st.subheader('A Machine learning application by Jonathan Pollyn')
-st.write(('This project aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process as it focuses on reducing the manual time and effort involved in the loan approval process'))
+from streamlit_option_menu import option_menu
+import streamlit.components.v1 as html
+from  PIL import Image
+import numpy as np
+from st_aggrid import AgGrid
+import plotly.express as px
+import io 
+
+# Add Option Menu to Sidebar
+with st.sidebar:
+    choose = option_menu("App Gallery", ["About", "Data Exploration", "Predict a Loan", "Contact"],
+                         icons=['house', 'activity', 'book','person lines fill'],
+                         menu_icon="app-indicator", default_index=0,
+                         styles={
+        "container": {"padding": "5!important", "background-color": "#000000"},
+        "icon": {"color": "orange", "font-size": "15px"}, 
+        "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
+        "nav-link-selected": {"background-color": "#02ab21"},
+    }
+    )
+
 
 from sklearn.model_selection import train_test_split
 from sklearn import svm
@@ -92,29 +110,59 @@ def prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History):
   
 # this is the main function that is define the webpage  
 def main():       
+    st.write('For any issues regarding the functionality of the application, please contact Jonathan Pollyn')
+
+
+    # Create App Pages
+# About page
+if choose == "About":
+   st.title('Loan prediction system')
+   st.write(('This project aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process as it focuses on reducing the manual time and effort involved in the loan approval process. This project evaluation measure or acceptance criteria are accurate and reduce false positives. Approving a loan for an applicant without eligibility and the capability to repay the loan will pose a severe challenge for the bank. The main acceptance criteria for this data science project are to increase accuracy and reduce the false positive rate. In addition to the final product, the project includes a user manual to work on this system. This manual is helpful for the users to understand the product thoroughly, how it works, and eligible input and expected output from the data product'))
+  
+    # Photo editing page
+elif choose == 'Data Exploration':
+    st.write(loan_dataset.head())
+    st.write(loan_dataset.describe())
+
+elif choose == 'Predict a Loan':
+    # this is the main function that is define the webpage  
+    def main():       
     # front end elements of the web page 
-    html_temp = """ 
-    <div style ="background-color:blue;padding:13px"> 
-    <h1 style ="color:black;text-align:center;">Loan Prediction system</h1> 
-    </div> 
-    """
+        html_temp = """ 
+        <div style ="background-color:blue;padding:13px"> 
+        <h1 style ="color:black;text-align:center;">Loan Prediction system</h1> 
+        </div> 
+        """
       
-    # display the front end aspect
-    st.markdown(html_temp, unsafe_allow_html = True) 
+        # display the front end aspect
+        st.markdown(html_temp, unsafe_allow_html = True) 
       
-    # following lines create boxes in which user can enter data required to make prediction 
-    Gender = st.selectbox('Gender',("Male","Female"))
-    Married = st.selectbox('Marital Status',("Single","Married")) 
-    ApplicantIncome = st.number_input("Applicants monthly income") 
-    LoanAmount = st.number_input("Total loan amount")
-    Credit_History = st.selectbox('Credit_History',("Outstanding Debts","No Outstanding Debts"))
-    result =""
+        # following lines create boxes in which user can enter data required to make prediction 
+        Gender = st.selectbox('Gender',("Male","Female"))
+        Married = st.selectbox('Marital Status',("Single","Married")) 
+        ApplicantIncome = st.number_input("Applicants monthly income") 
+        LoanAmount = st.number_input("Total loan amount")
+        Credit_History = st.selectbox('Credit_History',("Outstanding Debts","No Outstanding Debts"))
+        result =""
       
     # when 'Predict' is clicked, make the prediction and store it 
-    if st.button("Predict"): 
-        result = prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History) 
-        st.success('Your loan is {}'.format(result))
-        print(LoanAmount)
+        if st.button("Predict"): 
+            result = prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History) 
+            st.success('Your loan is {}'.format(result))
+            print(LoanAmount)
+elif choose == 'Contact':
+    st.markdown(""" <style> .font {
+                font-size:35px ; font-family: 'Cooper Black'; color: #FF9633;} 
+                </style> """, unsafe_allow_html=True)
+    st.markdown('<p class="font">Contact Form</p>', unsafe_allow_html=True)
+    with st.form(key='columns_in_form2',clear_on_submit=True): #set clear_on_submit=True so that the form will be reset/cleared once it's submitted
+    #st.write('Please help us improve!')
+        Name=st.text_input(label='Please Enter Your Name') #Collect user feedback
+        Email=st.text_input(label='Please Enter Email') #Collect user feedback
+        Message=st.text_input(label='Please Enter Your Message') #Collect user feedback
+        submitted = st.form_submit_button('Submit')
+        if submitted:
+            st.write('Thank you for the contact and a representative will get in touch with you within 24 hours')
      
 if __name__=='__main__': 
     main()
