@@ -5,6 +5,11 @@ import numpy as np
 import pandas as pd
 import seaborn as sns 
 
+import plotly.offline as pyo
+import plotly.graph_objs as go
+import matplotlib.pyplot as plt
+import plotly.express as px
+
 from streamlit_option_menu import option_menu
 import streamlit.components.v1 as html
 import numpy as np
@@ -119,8 +124,42 @@ if choose == "About":
   
     # Photo editing page
 elif choose == 'Data Exploration':
-    st.write(loan_dataset.head())
-    st.write(loan_dataset.describe())
+   
+
+    st.title("Data Exploration for Loan Application")
+    st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
+    loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
+
+    if loan_file is not None:
+        loan_df = pd.read_csv(loan_file)
+        st.write(loan_dataset.head())
+        st.write(loan_dataset.describe())
+    else:
+        loan_df= pd.read_csv('loan.csv')
+        st.write(loan_dataset.head())
+        st.write(loan_dataset.describe())
+        selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
+
+
+
+    st.subheader('Plotly Histogram Chart')
+    fig = px.histogram(loan_df[selected_x_var])
+    st.plotly_chart(fig)
+
+    st.subheader('Plotly Bar Chart')
+    selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
+    selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
+
+    data = [go.Bar(
+    x=loan_df[selected_x_bar], 
+    y=loan_df[selected_y_bar]
+    )]
+    layout = go.Layout(
+    title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
+    )
+    fig = go.Figure(data=data, layout=layout)
+    st.plotly_chart(fig)
+
 
 elif choose == 'Predict a Loan':
     # this is the main function that is define the webpage  
