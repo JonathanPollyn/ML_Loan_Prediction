@@ -124,13 +124,10 @@ def main():
     # Create App Pages
 # About page
 if choose == "About":
-    col1, col2 = st.columns( [0.5, 0.5])
-    with col1:
-        st.title('Loan prediction system')
-        st.write(('This project aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process as it focuses on reducing the manual time and effort involved in the loan approval process. This project evaluation measure or acceptance criteria are accurate and reduce false positives. Approving a loan for an applicant without eligibility and the capability to repay the loan will pose a severe challenge for the bank.'))
-    with col2:
-        st.write(('The main acceptance criteria for this data science project are to increase accuracy and reduce the false positive rate. In addition to the final product, the project includes a user manual to work on this system. This manual is helpful for the users to understand the product thoroughly, how it works, and eligible input and expected output from the data product.'))
-        st.write(( 'The main focus of the loan prediction system is to predict whether an applicant can repay the loan amount. To predict that, it must process an applicantloan application. Machine Learning predictive model will process the application of an applicant. Data from the application will be passed as input to the model.'))
+    st.title('Loan prediction system')
+    st.write(('This project aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process as it focuses on reducing the manual time and effort involved in the loan approval process. This project evaluation measure or acceptance criteria are accurate and reduce false positives. Approving a loan for an applicant without eligibility and the capability to repay the loan will pose a severe challenge for the bank.'))
+    st.write(('The main acceptance criteria for this data science project are to increase accuracy and reduce the false positive rate. In addition to the final product, the project includes a user manual to work on this system. This manual is helpful for the users to understand the product thoroughly, how it works, and eligible input and expected output from the data product.'))
+    st.write(( 'The main focus of the loan prediction system is to predict whether an applicant can repay the loan amount. To predict that, it must process an applicantloan application. Machine Learning predictive model will process the application of an applicant. Data from the application will be passed as input to the model.'))
 elif choose == "login" :
     st.title('Login')
     Username = st.text_input("UserName")
