@@ -16,9 +16,14 @@ import numpy as np
 import plotly.express as px
 import io 
 
+
+
+
+
+
 # Add Option Menu to Sidebar
 with st.sidebar:
-    choose = option_menu("App Gallery", ["About", "Data Exploration", "Predict a Loan"],
+    choose = option_menu("App Gallery", ["About", "login", "Data Exploration", "Predict a Loan"],
                          icons=['house', 'activity', 'book','person lines fill'],
                          menu_icon="app-indicator", default_index=0,
                          styles={
@@ -119,46 +124,55 @@ def main():
     # Create App Pages
 # About page
 if choose == "About":
-   st.title('Loan prediction system')
-   st.write(('This project aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process as it focuses on reducing the manual time and effort involved in the loan approval process. This project evaluation measure or acceptance criteria are accurate and reduce false positives. Approving a loan for an applicant without eligibility and the capability to repay the loan will pose a severe challenge for the bank. The main acceptance criteria for this data science project are to increase accuracy and reduce the false positive rate. In addition to the final product, the project includes a user manual to work on this system. This manual is helpful for the users to understand the product thoroughly, how it works, and eligible input and expected output from the data product'))
+    col1, col2 = st.columns( [0.5, 0.5])
+    with col1:
+        st.title('Loan prediction system')
+        st.write(('This project aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process as it focuses on reducing the manual time and effort involved in the loan approval process. This project evaluation measure or acceptance criteria are accurate and reduce false positives. Approving a loan for an applicant without eligibility and the capability to repay the loan will pose a severe challenge for the bank.'))
+    with col2:
+        st.write(('The main acceptance criteria for this data science project are to increase accuracy and reduce the false positive rate. In addition to the final product, the project includes a user manual to work on this system. This manual is helpful for the users to understand the product thoroughly, how it works, and eligible input and expected output from the data product.'))
+        st.write(( 'The main focus of the loan prediction system is to predict whether an applicant can repay the loan amount. To predict that, it must process an applicantloan application. Machine Learning predictive model will process the application of an applicant. Data from the application will be passed as input to the model.'))
+elif choose == "login" :
+    st.title('Login')
+    Username = st.text_input("UserName")
+    Password = st.text_input("Password",type="password")
+    if st.button("Login"):
+        if (Username == 'admin') & (Password == 'admin123'):
+            st.write("successful login")
+            
+        else:
+            st.write('Please enter a valide username and password')
   
-    # Photo editing page
 elif choose == 'Data Exploration':
-   
+      st.title("Data Exploration for Loan Application")
+      st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
+      loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
+      if loan_file is not None:
+            loan_df = pd.read_csv(loan_file)
+            st.write(loan_dataset.head())
+            st.write(loan_dataset.describe())
+      else:
+            loan_df= pd.read_csv('loan.csv')
+            st.write(loan_dataset.head())
+            st.write(loan_dataset.describe())
+      
+            st.subheader('Plotly Histogram Chart')
+            selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
+            fig = px.histogram(loan_df[selected_x_var])
+            st.plotly_chart(fig)
 
-    st.title("Data Exploration for Loan Application")
-    st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
-    loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
+            st.subheader('Plotly Bar Chart')
+            selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
+            selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
 
-    if loan_file is not None:
-        loan_df = pd.read_csv(loan_file)
-        st.write(loan_dataset.head())
-        st.write(loan_dataset.describe())
-    else:
-        loan_df= pd.read_csv('loan.csv')
-        st.write(loan_dataset.head())
-        st.write(loan_dataset.describe())
-        selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
-
-
-
-    st.subheader('Plotly Histogram Chart')
-    fig = px.histogram(loan_df[selected_x_var])
-    st.plotly_chart(fig)
-
-    st.subheader('Plotly Bar Chart')
-    selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
-    selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
-
-    data = [go.Bar(
-    x=loan_df[selected_x_bar], 
-    y=loan_df[selected_y_bar]
-    )]
-    layout = go.Layout(
-    title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
-    )
-    fig = go.Figure(data=data, layout=layout)
-    st.plotly_chart(fig)
+            data = [go.Bar(
+            x=loan_df[selected_x_bar], 
+            y=loan_df[selected_y_bar]
+            )]
+            layout = go.Layout(
+            title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
+            )
+            fig = go.Figure(data=data, layout=layout)
+            st.plotly_chart(fig)
 
 
 elif choose == 'Predict a Loan':
