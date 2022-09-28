@@ -18,21 +18,28 @@ import io
 
 
 
+# DB Management
+import sqlite3 
+conn = sqlite3.connect('data.db')
+c = conn.cursor()
+def create_usertable():
+	c.execute('CREATE TABLE IF NOT EXISTS userstable(username TEXT,password TEXT)')
 
 
+def add_userdata(username,password):
+	c.execute('INSERT INTO userstable(username,password) VALUES (?,?)',(username,password))
+	conn.commit()
 
-# Add Option Menu to Sidebar
-with st.sidebar:
-    choose = option_menu("App Gallery", ["About", "login", "Data Exploration", "Predict a Loan"],
-                         icons=['house', 'activity', 'book','person lines fill'],
-                         menu_icon="app-indicator", default_index=0,
-                         styles={
-        "container": {"padding": "5!important", "background-color": "#000000"},
-        "icon": {"color": "orange", "font-size": "15px"}, 
-        "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
-        "nav-link-selected": {"background-color": "#02ab21"},
-    }
-    )
+def login_user(username,password):
+	c.execute('SELECT * FROM userstable WHERE username =? AND password = ?',(username,password))
+	data = c.fetchall()
+	return data
+
+def view_all_users():
+	c.execute('SELECT * FROM userstable')
+	data = c.fetchall()
+	return data
+
 
 
 from sklearn.model_selection import train_test_split
@@ -120,6 +127,11 @@ def prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History):
 def main():       
     st.write('For any issues regarding the functionality of the application, please contact Jonathan Pollyn')
 
+# Add Option Menu to Sidebar
+st.title('App information')
+menu = ["About", "login", "SignUp"]
+choose = st.sidebar.selectbox("Menu", menu)
+
 
     # Create App Pages
 # About page
@@ -129,15 +141,103 @@ if choose == "About":
     st.write(('The main acceptance criteria for this data science project are to increase accuracy and reduce the false positive rate. In addition to the final product, the project includes a user manual to work on this system. This manual is helpful for the users to understand the product thoroughly, how it works, and eligible input and expected output from the data product.'))
     st.write(( 'The main focus of the loan prediction system is to predict whether an applicant can repay the loan amount. To predict that, it must process an applicantloan application. Machine Learning predictive model will process the application of an applicant. Data from the application will be passed as input to the model.'))
 elif choose == "login" :
-    st.title('Login')
-    Username = st.text_input("UserName")
-    Password = st.text_input("Password",type="password")
-    if st.button("Login"):
-        if (Username == 'admin') & (Password == 'admin123'):
-            st.write("successful login")
+    st.subheader('Login')
+
+    username = st.sidebar.text_input('User Name')
+    password = st.sidebar.text_input('Password', type='password')
+
+    if st.sidebar.checkbox('Login'):
+        # if password == '12345':
+        create_usertable()
+        result = login_user(username, password)
+        if result:
             
+            st.success('Logged in as {}'.format(username))
+
+            task = st.selectbox('Task', ['Add a Post' , 'Analytics','Profile'])
+            if task == 'Add a Post':
+                st.subheader('Add your post')
+                def main():       
+                # front end elements of the web page 
+                    html_temp = """ 
+                    <div style ="background-color:blue;padding:13px"> 
+                    <h1 style ="color:black;text-align:center;">Loan Prediction system</h1> 
+                    </div> 
+                    """
+                
+                    # display the front end aspect
+                    st.markdown(html_temp, unsafe_allow_html = True) 
+                
+                    # following lines create boxes in which user can enter data required to make prediction 
+                    Gender = st.selectbox('Gender',("Male","Female"))
+                    Married = st.selectbox('Marital Status',("Single","Married")) 
+                    ApplicantIncome = st.number_input("Applicants monthly income") 
+                    LoanAmount = st.number_input("Total loan amount")
+                    Credit_History = st.selectbox('Credit_History',("Outstanding Debts","No Outstanding Debts"))
+                    result =""
+                
+                # when 'Predict' is clicked, make the prediction and store it 
+                    if st.button("Predict"): 
+                        result = prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History) 
+                        st.success('Your loan is {}'.format(result))
+                        print(LoanAmount)
+
+
+
+            elif task == 'Analytics':
+                st.subheader('Perform your analysis')
+                st.title("Data Exploration for Loan Application")
+                st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
+                loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
+                if loan_file is not None:
+                        loan_df = pd.read_csv(loan_file)
+                        st.write(loan_dataset.head())
+                        st.write(loan_dataset.describe())
+                else:
+                        loan_df= pd.read_csv('loan.csv')
+                        st.write(loan_dataset.head())
+                        st.write(loan_dataset.describe())
+                
+                        st.subheader('Plotly Histogram Chart')
+                        selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
+                        fig = px.histogram(loan_df[selected_x_var])
+                        st.plotly_chart(fig)
+
+                        st.subheader('Plotly Bar Chart')
+                        selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
+                        selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
+
+                        data = [go.Bar(
+                        x=loan_df[selected_x_bar], 
+                        y=loan_df[selected_y_bar]
+                        )]
+                        layout = go.Layout(
+                        title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
+                        )
+                        fig = go.Figure(data=data, layout=layout)
+                        st.plotly_chart(fig)
+
+            elif task == 'Profile':
+                st.subheader('User Profiles')
+                user_result = view_all_users()
+                clean_db = pd.DataFrame(user_result, columns=['Username', 'Password'])
+                st.dataframe(clean_db)
         else:
-            st.write('Please enter a valide username and password')
+            st.warning('Incorrect Username or Password')
+elif choose == 'SignUp':
+        new_user = st.text_input('Username')
+        new_password = st.text_input('Password', type='password')
+        create_usertable()
+        if new_user:
+            st.warning('Sorry that user name already exist')
+        elif st.button('Signup'):
+            create_usertable()
+            add_userdata(new_user, new_password)
+            st.success('Congratulation, you have successfully created an account')
+            st.info('Go to the Login Menu to login')
+
+
+    
   
 elif choose == 'Data Exploration':
       st.title("Data Exploration for Loan Application")
@@ -198,7 +298,8 @@ elif choose == 'Predict a Loan':
             result = prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History) 
             st.success('Your loan is {}'.format(result))
             print(LoanAmount)
-
+elif choose == "SignUp":
+    st.subheader('Create a new account')
      
 if __name__=='__main__': 
     main()
