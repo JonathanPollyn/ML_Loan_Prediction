@@ -235,11 +235,9 @@ elif choose == "login" :
 elif choose == 'SignUp':
         new_user = st.text_input('Username')
         new_password = st.text_input('Password', type='password')
-        # create_usertable()
-        # if new_user == create_usertable():
-        #     st.warning('Sorry that user name already exist')
+        
         if st.button('Signup'):
-            create_usertable()
+            # create_usertable()
             add_userdata(new_user, new_password)
             st.success('Congratulation, you have successfully created an account')
             st.info('Go to the Login Menu to login')
