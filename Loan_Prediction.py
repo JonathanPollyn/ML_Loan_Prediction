@@ -125,17 +125,24 @@ def prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History):
   
 # this is the main function that is define the webpage  
 def main():       
-    st.write('For any issues regarding the functionality of the application, please contact Jonathan Pollyn')
+    st.write('')
 
 # Add Option Menu to Sidebar
-st.title('App information')
-menu = ["About", "login", "SignUp"]
+# st.title('App information')
+menu = ["Home","About", "login", "SignUp"]
 choose = st.sidebar.selectbox("Menu", menu)
 
 
     # Create App Pages
+if choose == "Home":
+    st.title('Welcome')
+    st.write("Thank you for visiting, my name is Jonathan Pollyn, and this web application is inspired by my capstone project for my master's degree program with Grand Canyon University. I currently work as a data engineer and am passionate about databases, Business Intelligence, and data science.")
+
+    st.write(' I have developed enterprise-level Business Intelligence solutions for various industries, focusing on performance optimization, pattern recognition, efficient analysis of business processes, and interactive visualizations. As part of my program with GCU, I have been exposed to various learning tools that have strengthened my knowledge and helped me to understand the future of data science.')
+
+    st.write('If you have any questions, do not hesitate to get in touch with me via email at j.pollyn@gmail.com')
 # About page
-if choose == "About":
+elif choose == "About":
     st.title('Loan prediction system')
     st.write(('This project aims to create a "Data science product" such as a "Loan prediction system" for the bank. The product will automate the loan approval process as it focuses on reducing the manual time and effort involved in the loan approval process. This project evaluation measure or acceptance criteria are accurate and reduce false positives. Approving a loan for an applicant without eligibility and the capability to repay the loan will pose a severe challenge for the bank.'))
     st.write(('The main acceptance criteria for this data science project are to increase accuracy and reduce the false positive rate. In addition to the final product, the project includes a user manual to work on this system. This manual is helpful for the users to understand the product thoroughly, how it works, and eligible input and expected output from the data product.'))
@@ -154,9 +161,9 @@ elif choose == "login" :
             
             st.success('Logged in as {}'.format(username))
 
-            task = st.selectbox('Task', ['Add a Post' , 'Analytics','Profile'])
-            if task == 'Add a Post':
-                st.subheader('Add your post')
+            task = st.selectbox('Task', ['Predict a load Application' , 'Data Exploration','Contacts'])
+            if task == 'Predict a load Application':
+                st.subheader('Predict your loan eligibility')
                 def main():       
                 # front end elements of the web page 
                     html_temp = """ 
@@ -184,7 +191,7 @@ elif choose == "login" :
 
 
 
-            elif task == 'Analytics':
+            elif task == 'Data Exploration':
                 st.subheader('Perform your analysis')
                 st.title("Data Exploration for Loan Application")
                 st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
@@ -217,20 +224,21 @@ elif choose == "login" :
                         fig = go.Figure(data=data, layout=layout)
                         st.plotly_chart(fig)
 
-            elif task == 'Profile':
-                st.subheader('User Profiles')
-                user_result = view_all_users()
-                clean_db = pd.DataFrame(user_result, columns=['Username', 'Password'])
-                st.dataframe(clean_db)
+            elif task == 'Contacts':
+                # st.subheader('User Contactss')
+                # user_result = view_all_users()
+                # clean_db = pd.DataFrame(user_result, columns=['Username', 'Password'])
+                # st.dataframe(clean_db)
+                st.write('Coming Soon')
         else:
             st.warning('Incorrect Username or Password')
 elif choose == 'SignUp':
         new_user = st.text_input('Username')
         new_password = st.text_input('Password', type='password')
-        create_usertable()
-        if new_user:
-            st.warning('Sorry that user name already exist')
-        elif st.button('Signup'):
+        # create_usertable()
+        # if new_user == create_usertable():
+        #     st.warning('Sorry that user name already exist')
+        if st.button('Signup'):
             create_usertable()
             add_userdata(new_user, new_password)
             st.success('Congratulation, you have successfully created an account')
@@ -298,8 +306,7 @@ elif choose == 'Predict a Loan':
             result = prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History) 
             st.success('Your loan is {}'.format(result))
             print(LoanAmount)
-elif choose == "SignUp":
-    st.subheader('Create a new account')
+
      
 if __name__=='__main__': 
     main()
