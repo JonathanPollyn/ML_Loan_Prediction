@@ -16,6 +16,8 @@ import numpy as np
 import plotly.express as px
 import io 
 
+# #  Import db_fxn
+# from db_fxn import create_usertable, add_userdata, login_user, view_all_users
 
 
 # DB Management
@@ -129,7 +131,7 @@ def main():
 
 # Add Option Menu to Sidebar
 # st.title('App information')
-menu = ["Home","About", "login", "SignUp"]
+menu = ["Home","About", "login", "Contact"]
 choose = st.sidebar.selectbox("Menu", menu)
 
 
@@ -140,7 +142,7 @@ if choose == "Home":
 
     st.write(' I have developed enterprise-level Business Intelligence solutions for various industries, focusing on performance optimization, pattern recognition, efficient analysis of business processes, and interactive visualizations. As part of my program with GCU, I have been exposed to various learning tools that have strengthened my knowledge and helped me to understand the future of data science.')
 
-    st.write('If you have any questions, do not hesitate to get in touch with me via email at j.pollyn@gmail.com')
+    # st.write('If you have any questions, do not hesitate to get in touch with me via email at j.pollyn@gmail.com')
 # About page
 elif choose == "About":
     st.title('Loan prediction system')
@@ -161,7 +163,7 @@ elif choose == "login" :
             
             st.success('Logged in as {}'.format(username))
 
-            task = st.selectbox('Task', ['Predict a load Application' , 'Data Exploration','Contacts'])
+            task = st.selectbox('Task', ['Predict a load Application' , 'Data Exploration'])
             if task == 'Predict a load Application':
                 st.subheader('Predict your loan eligibility')
                 def main():       
@@ -192,118 +194,123 @@ elif choose == "login" :
 
 
             elif task == 'Data Exploration':
-                st.subheader('Perform your analysis')
-                st.title("Data Exploration for Loan Application")
-                st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
-                loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
-                if loan_file is not None:
-                        loan_df = pd.read_csv(loan_file)
-                        st.write(loan_dataset.head())
-                        st.write(loan_dataset.describe())
-                else:
-                        loan_df= pd.read_csv('loan.csv')
-                        st.write(loan_dataset.head())
-                        st.write(loan_dataset.describe())
-                
-                        st.subheader('Plotly Histogram Chart')
-                        selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
-                        fig = px.histogram(loan_df[selected_x_var])
-                        st.plotly_chart(fig)
+                admin_user = 'admin1'
+                if admin_user:
+                    
+                    if username == 'admin1':
+                        st.subheader('Perform your analysis')
+                        st.title("Data Exploration for Loan Application")
+                        st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
+                        loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
+                        if loan_file is not None:
+                                loan_df = pd.read_csv(loan_file)
+                                st.write(loan_dataset.head())
+                                st.write(loan_dataset.describe())
+                        else:
+                                loan_df= pd.read_csv('loan.csv')
+                                st.write(loan_dataset.head())
+                                st.write(loan_dataset.describe())
+                        
+                                st.subheader('Plotly Histogram Chart')
+                                selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
+                                fig = px.histogram(loan_df[selected_x_var])
+                                st.plotly_chart(fig)
 
-                        st.subheader('Plotly Bar Chart')
-                        selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
-                        selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
+                                st.subheader('Plotly Bar Chart')
+                                selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
+                                selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
 
-                        data = [go.Bar(
-                        x=loan_df[selected_x_bar], 
-                        y=loan_df[selected_y_bar]
-                        )]
-                        layout = go.Layout(
-                        title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
-                        )
-                        fig = go.Figure(data=data, layout=layout)
-                        st.plotly_chart(fig)
+                                data = [go.Bar(
+                                x=loan_df[selected_x_bar], 
+                                y=loan_df[selected_y_bar]
+                                )]
+                                layout = go.Layout(
+                                title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
+                                )
+                                fig = go.Figure(data=data, layout=layout)
+                                st.plotly_chart(fig)
+                    else:
+                        st.warning('Sorry, you are not permitted to view this page. Only admin users can perform data exploration. Please get in touch with Jonathan Pollyn for more information.')
 
-            elif task == 'Contacts':
-                # st.subheader('User Contactss')
-                # user_result = view_all_users()
-                # clean_db = pd.DataFrame(user_result, columns=['Username', 'Password'])
-                # st.dataframe(clean_db)
-                st.write('Coming Soon')
+
         else:
             st.warning('Incorrect Username or Password')
-elif choose == 'SignUp':
-        new_user = st.text_input('Username')
-        new_password = st.text_input('Password', type='password')
+# elif choose == 'SignUp':
+#         new_user = st.text_input('Username')
+#         new_password = st.text_input('Password', type='password')
         
-        if st.button('Signup'):
-            # create_usertable()
-            add_userdata(new_user, new_password)
-            st.success('Congratulation, you have successfully created an account')
-            st.info('Go to the Login Menu to login')
+#         if st.button('Signup'):
+#             create_usertable()
+#             add_userdata(new_user, new_password)
+#             st.success('Congratulation, you have successfully created an account')
+#             st.info('Go to the Login Menu to login')
+
+elif choose == 'Contact':
+    st.write('If you do not have a valid login username and password, please get in touch with the developer of this application by email at j.pollyn@gmail.com. Jonathan Pollyn will give secure login credentials that you can use to log in and access the application.')
+
 
 
     
   
-elif choose == 'Data Exploration':
-      st.title("Data Exploration for Loan Application")
-      st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
-      loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
-      if loan_file is not None:
-            loan_df = pd.read_csv(loan_file)
-            st.write(loan_dataset.head())
-            st.write(loan_dataset.describe())
-      else:
-            loan_df= pd.read_csv('loan.csv')
-            st.write(loan_dataset.head())
-            st.write(loan_dataset.describe())
+# elif choose == 'Data Exploration':
+#       st.title("Data Exploration for Loan Application")
+#       st.markdown('This section of the code is designated for performing various exploratory data analysis. You can upload your own file for the analysis. Also check below for more options of analysis')
+#       loan_file = st.file_uploader('Select Your Local Loan historical CSV (default provided)')
+#       if loan_file is not None:
+#             loan_df = pd.read_csv(loan_file)
+#             st.write(loan_dataset.head())
+#             st.write(loan_dataset.describe())
+#       else:
+#             loan_df= pd.read_csv('loan.csv')
+#             st.write(loan_dataset.head())
+#             st.write(loan_dataset.describe())
       
-            st.subheader('Plotly Histogram Chart')
-            selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
-            fig = px.histogram(loan_df[selected_x_var])
-            st.plotly_chart(fig)
+#             st.subheader('Plotly Histogram Chart')
+#             selected_x_var = st.selectbox('What do want the x variable to be?', ['Gender','Self_Employed','Education'])
+#             fig = px.histogram(loan_df[selected_x_var])
+#             st.plotly_chart(fig)
 
-            st.subheader('Plotly Bar Chart')
-            selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
-            selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
+#             st.subheader('Plotly Bar Chart')
+#             selected_x_bar = st.selectbox('Select from the avaiable x variable: ', ['Married','Property_Area'])
+#             selected_y_bar = st.selectbox('Select from the avaiable y variable', ['Dependents','ApplicantIncome','CoapplicantIncome','LoanAmount','Loan_Amount_Term'])
 
-            data = [go.Bar(
-            x=loan_df[selected_x_bar], 
-            y=loan_df[selected_y_bar]
-            )]
-            layout = go.Layout(
-            title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
-            )
-            fig = go.Figure(data=data, layout=layout)
-            st.plotly_chart(fig)
+#             data = [go.Bar(
+#             x=loan_df[selected_x_bar], 
+#             y=loan_df[selected_y_bar]
+#             )]
+#             layout = go.Layout(
+#             title="Bar chart for: {},{}".format(selected_x_bar,selected_y_bar)
+#             )
+#             fig = go.Figure(data=data, layout=layout)
+#             st.plotly_chart(fig)
 
 
-elif choose == 'Predict a Loan':
-    # this is the main function that is define the webpage  
-    def main():       
-    # front end elements of the web page 
-        html_temp = """ 
-        <div style ="background-color:blue;padding:13px"> 
-        <h1 style ="color:black;text-align:center;">Loan Prediction system</h1> 
-        </div> 
-        """
+# elif choose == 'Predict a Loan':
+#     # this is the main function that is define the webpage  
+#     def main():       
+#     # front end elements of the web page 
+#         html_temp = """ 
+#         <div style ="background-color:blue;padding:13px"> 
+#         <h1 style ="color:black;text-align:center;">Loan Prediction system</h1> 
+#         </div> 
+#         """
       
-        # display the front end aspect
-        st.markdown(html_temp, unsafe_allow_html = True) 
+#         # display the front end aspect
+#         st.markdown(html_temp, unsafe_allow_html = True) 
       
-        # following lines create boxes in which user can enter data required to make prediction 
-        Gender = st.selectbox('Gender',("Male","Female"))
-        Married = st.selectbox('Marital Status',("Single","Married")) 
-        ApplicantIncome = st.number_input("Applicants monthly income") 
-        LoanAmount = st.number_input("Total loan amount")
-        Credit_History = st.selectbox('Credit_History',("Outstanding Debts","No Outstanding Debts"))
-        result =""
+#         # following lines create boxes in which user can enter data required to make prediction 
+#         Gender = st.selectbox('Gender',("Male","Female"))
+#         Married = st.selectbox('Marital Status',("Single","Married")) 
+#         ApplicantIncome = st.number_input("Applicants monthly income") 
+#         LoanAmount = st.number_input("Total loan amount")
+#         Credit_History = st.selectbox('Credit_History',("Outstanding Debts","No Outstanding Debts"))
+#         result =""
       
-    # when 'Predict' is clicked, make the prediction and store it 
-        if st.button("Predict"): 
-            result = prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History) 
-            st.success('Your loan is {}'.format(result))
-            print(LoanAmount)
+#     # when 'Predict' is clicked, make the prediction and store it 
+#         if st.button("Predict"): 
+#             result = prediction(Gender, Married, ApplicantIncome, LoanAmount, Credit_History) 
+#             st.success('Your loan is {}'.format(result))
+#             print(LoanAmount)
 
      
 if __name__=='__main__': 
